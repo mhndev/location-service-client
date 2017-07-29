@@ -1,0 +1,25 @@
+# Location Service PHP SDK
+
+### Sample code 
+```php
+
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
+
+require 'vendor/autoload.php';
+
+$client = new \mhndev\locationClient\Client(
+    'http://127.0.0.1',
+    8065,
+    'eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImp0aSI6IjY2NjBhZmU5Mzk1MmE5M2U3NTU5NjAyNmQyNWY1Y2UzNDBiNTY2YTBkMmNhMjBhMGY2NjI1NWU0MmRkNjg3MTJmNWQ2NWFjNTY0MTAyMGNhIn0.eyJhdWQiOiJkaWdpcGV5a19zcnYjeTEyZElxcTQ1b2VXRTRTQlVxOGI0ZStkdnhDdUJvS0RRR3dxdThzOGt4ST0iLCJqdGkiOiI2NjYwYWZlOTM5NTJhOTNlNzU1OTYwMjZkMjVmNWNlMzQwYjU2NmEwZDJjYTIwYTBmNjYyNTVlNDJkZDY4NzEyZjVkNjVhYzU2NDEwMjBjYSIsImlhdCI6MTUwMTM0NzkxNSwibmJmIjoxNTAxMzQ3OTE1LCJleHAiOjE1MDE0MzQzMTUsInN1YiI6IiIsInNjb3BlcyI6WyIqIl19.aO43JXuemctOEzMfMBjeCZnXLlitHueke5-d-ysymSW6RVpiAFcRnhCAuBRoZjYRqGyX_9sEfL35OwIZNj1WGUlSEGrHlV322kbbSgFfWC_BjyWzK5N3ytDWZvS77B5hUrWcIH2efyKwmamPcjZIB_ufW0GplIz5xx9sRT6CnH9Kr408odhLGZwO4qIuwCkDGHaxxeCxzfak3bHT2yZtcVM8J9jqyS_LrR2utaa_JBTEKpBbXp34pFrljYrZi5h-mhvzzsIOa5anwA1Lj7J3qLQiQNJ9oB154z6NT02c32dL4G-aOmQJei8josfKc4RCAS4ctO4ImgcEWZC8ZG0XDfL5pCisC1h_rar_qxJQ8xgprf_DElsBT__Y5OzNkOXNJrANBjqMyoFZ-siRcOS7w2WIKkYtJZp9bw5DdpFhdlMu2-5-7qd1wkqVhUID929qADaBYVe5dlNYe-KqYobmRKo05IcWoV-_p3yf1Eq-mu3BooM2BUT4MbDJPE_KiZxiXkvnsbGvX56FXZuU2bahHfjigog_61DdWK85b0Jqa8ykrrvZqe68NqBSnX5_UOz2b8qcLJLAwBgTf1Z81JaEkLVvZ_qtIisYKX4YYaKpSLMBtZgbt0iQSJc7RegqaMWqI86TAROZ5NwKuzSK4XUprYHACOovcT3G3yqnoToE9Uo'
+);
+
+$nodes = $client->nearestNeighbours(6.1234,6.1234,10, 1000);
+
+
+var_dump($nodes);
+die();
+
+```
