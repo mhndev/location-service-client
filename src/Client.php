@@ -3,7 +3,10 @@ namespace mhndev\locationClient;
 
 use GuzzleHttp\Client as httpClient;
 use GuzzleHttp\Exception\ClientException;
+use GuzzleHttp\Exception\ConnectException;
+use mhndev\locationClient\exceptions\ConnectException as LocationConnectException;
 use mhndev\locationClient\exceptions\EmptyResultSetException;
+use mhndev\locationClient\exceptions\LocationServerErrorException;
 use mhndev\locationClient\exceptions\UnAuthorizedException;
 use mhndev\locationClient\objects\Location;
 use mhndev\locationClient\objects\NeighbourNode;
@@ -273,10 +276,19 @@ class Client
     {
         try{
             $response = $this->httpClient->get($uri, $options);
-        }catch (ClientException $e){
+        }catch (ConnectException $e){
+            throw new LocationConnectException(
+                'Cannot Establish connection to Location Service'.$e->getMessage()
+            );
+        }
+        catch (ClientException $e){
             if($e->getResponse()->getStatusCode() == 401){
                 throw new UnAuthorizedException();
-            }else{
+            }elseif ($e->getResponse()->getStatusCode() >= 500){
+                throw new LocationServerErrorException($e->getResponse()->getBody()->getContents());
+            }
+
+            else{
                 throw new \Exception('Unhandled Exception');
             }
 
