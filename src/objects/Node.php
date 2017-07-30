@@ -39,18 +39,48 @@ class Node
     protected $state;
 
     /**
-     * Node constructor.
-     * @param string $identifier
-     * @param float $latitude
-     * @param float $longitude
-     * @param string | null $state
+     * @var string
      */
-    public function __construct($identifier, $latitude, $longitude, $state = null)
+    protected $trip_id;
+
+    /**
+     * Node constructor.
+     *
+     * @param string $identifier
+     * @param float  $latitude
+     * @param float  $longitude
+     * @param string $state
+     * @param string $trip_id
+     */
+    public function __construct(
+        string $identifier,
+        float $latitude,
+        float $longitude,
+        string $state = '',
+        string $trip_id = ''
+    )
     {
         $this->identifier = $identifier;
-        $this->latitude = $latitude;
-        $this->longitude = $longitude;
-        $this->state = $state;
+        $this->latitude   = $latitude;
+        $this->longitude  = $longitude;
+        $this->state      = $state;
+        $this->trip_id    = $trip_id;
+    }
+
+
+    /**
+     * @param array $array
+     * @return static
+     */
+    public static function fromArray(array $array)
+    {
+        return new static(
+            $array['identifier'],
+            $array['latitude'],
+            $array['longitude'],
+            $array['state'],
+            $array['trip_id']
+        );
     }
 
 
@@ -129,6 +159,27 @@ class Node
 
         return $this;
     }
+
+    /**
+     * @return string
+     */
+    public function getTripId(): string
+    {
+        return $this->trip_id;
+    }
+
+
+    /**
+     * @param string $trip_id
+     * @return $this
+     */
+    public function setTripId(string $trip_id)
+    {
+        $this->trip_id = $trip_id;
+
+        return $this;
+    }
+
 
 
 }

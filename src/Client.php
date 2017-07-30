@@ -49,7 +49,11 @@ class Client
      * @param int $port
      * @param string $token
      */
-    public function __construct(string $host, int $port, string $token)
+    public function __construct(
+        string $host,
+        int $port,
+        string $token
+    )
     {
         $this->host = $host;
         $this->port = $port;
@@ -80,9 +84,7 @@ class Client
         $uri = $this->getAddresses(__FUNCTION__);
 
         $options = [
-            'headers' => [
-                'Authorization' => 'Bearer '.$this->token
-            ],
+            'headers' => [ 'Authorization' => 'Bearer '.$this->token ],
             'query' => [
                 'lat' => $latitude,
                 'lon' => $longitude,
@@ -91,12 +93,8 @@ class Client
             ]
         ];
 
-
         $response = $this->request($uri, $options);
-
         $nodes = $this->getResult($response)['result'];
-
-
         $result = [];
 
         if(empty($nodes)){
@@ -105,7 +103,6 @@ class Client
             }
         }
         else{
-
             foreach ($nodes as $node){
                 $result[] = new NeighbourNode(
                     $node['id'],
@@ -114,7 +111,6 @@ class Client
                 );
             }
         }
-
 
         return $result;
     }
@@ -132,7 +128,6 @@ class Client
     )
     {
         // todo
-
     }
 
 
@@ -143,7 +138,6 @@ class Client
     public function geoCode(string $location_name)
     {
         // todo
-
     }
 
 
@@ -156,7 +150,6 @@ class Client
     public function reverseGeocode(float $latitude, float $longitude)
     {
         // todo
-
     }
 
 
@@ -181,39 +174,119 @@ class Client
 
     /**
      * @param Node $node
+     * @return Node
      */
     public function saveLastLocation(Node $node)
     {
+        $uri = $this->getAddresses(__FUNCTION__);
 
+        $options = [
+            'headers' => [
+                'Authorization' => 'Bearer '.$this->token,
+                'Content-Type'  => 'application/json'
+            ],
+            'json' => [
+                'id' => $node->getIdentifier(),
+                'location' => [
+                    'lat' => $node->getLatitude(),
+                    'lon' => $node->getLongitude()
+                ]
+            ]
+        ];
+
+        $response = $this->request($uri, $options, 'post');
+        $nodeArray = $this->getResult($response);
+
+        return Node::fromArray($nodeArray['result']);
     }
 
 
     /**
      * @param Node $node
+     * @return Node
      */
     public function changeNodeState(Node $node)
     {
+        $uri = $this->getAddresses(__FUNCTION__);
 
+        $options = [
+            'headers' => [
+                'Authorization' => 'Bearer '.$this->token,
+                'Content-Type'  => 'application/json'
+            ],
+            'json' => [
+                'id' => $node->getIdentifier(),
+                'state' => $node->getState()
+            ]
+        ];
+
+        $response = $this->request($uri, $options, 'post');
+        $nodeArray = $this->getResult($response);
+
+        return Node::fromArray($nodeArray['result']);
     }
 
 
     /**
      * @param Node $node
-     * @param $trip_id
+     * @param string $trip_id
+     *
+     * @return boolean
      */
-    public function startTrip(Node $node, $trip_id)
+    public function startTrip(Node $node, string $trip_id)
     {
+        $uri = $this->getAddresses(__FUNCTION__);
 
+        $options = [
+            'headers' => [
+                'Authorization' => 'Bearer '.$this->token,
+                'Content-Type'  => 'application/json'
+            ],
+            'json' => [
+                'node_id' => $node->getIdentifier(),
+                'trip_id' => $trip_id
+            ]
+        ];
+
+        $response = $this->request($uri, $options, 'post');
+
+        if($this->getResult($response)['result'] == true){
+            return true;
+        }
+        else{
+            return false;
+        }
     }
 
 
     /**
      * @param Node $node
-     * @param $trip_id
+     * @param string $trip_id
+     * @return bool
      */
-    public function endTrip(Node $node, $trip_id)
+    public function endTrip(Node $node, string $trip_id)
     {
+        $uri = $this->getAddresses(__FUNCTION__);
 
+        $options = [
+            'headers' => [
+                'Authorization' => 'Bearer '.$this->token,
+                'Content-Type'  => 'application/json'
+            ],
+            'json' => [
+                'node_id' => $node->getIdentifier(),
+                'trip_id' => $trip_id
+            ]
+        ];
+
+        $response = $this->request($uri, $options, 'post');
+
+        if($this->getResult($response)['result'] == true){
+            return true;
+        }
+        else{
+            return false;
+        }
     }
 
 
@@ -221,13 +294,26 @@ class Client
      * @param Node $node
      * @param $trip_id
      *
-     * @return array return array of points
+     * @return array
      */
     public function getNodeTripPoints(Node $node, $trip_id)
     {
+        $uri = $this->getAddresses(__FUNCTION__);
 
-        // todo
-        return [];
+        $options = [
+            'headers' => [
+                'Authorization' => 'Bearer '.$this->token,
+                'Content-Type'  => 'application/json'
+            ],
+            'query' => [
+                'node_id' => $node->getIdentifier(),
+                'trip_id' => $trip_id
+            ]
+        ];
+
+        $response = $this->request($uri, $options);
+
+        return $this->getResult($response);
     }
 
 
@@ -238,16 +324,16 @@ class Client
     private function getAddresses(string $action) :string
     {
         $addresses = [
-            'getNodeTripPoints' => '',
-            'startTrip' => '/trip',
-            'endTrip' => '/trip/end',
-            'changeNodeState' => '/location/state',
-            'saveLastLocation' => '/location',
+            'getNodeTripPoints'       => '/trip',
+            'startTrip'               => '/trip',
+            'endTrip'                 => '/trip/end',
+            'changeNodeState'         => '/location/state',
+            'saveLastLocation'        => '/location',
+            'nearestNeighbours'       => '/location/knn',
             'EstimateDistanceAndTime' => '',
-            'reverseGeocode' => '',
-            'geoCode' => '',
-            'locationNameSuggest' => '',
-            'nearestNeighbours' => '/location/knn'
+            'reverseGeocode'          => '',
+            'geoCode'                 => '',
+            'locationNameSuggest'     => ''
         ];
 
         return $addresses[$action];
@@ -266,16 +352,17 @@ class Client
 
 
     /**
-     * @param $uri
+     * @param string $method
+     * @param string $uri
      * @param array $options
      * @return ResponseInterface
      * @throws UnAuthorizedException
      * @throws \Exception
      */
-    private function request($uri, array $options)
+    private function request(string $uri, array $options = [], $method = 'get')
     {
         try{
-            $response = $this->httpClient->get($uri, $options);
+            $response = $this->httpClient->$method($uri, $options);
         }catch (ConnectException $e){
             throw new LocationConnectException(
                 'Cannot Establish connection to Location Service'.$e->getMessage()
