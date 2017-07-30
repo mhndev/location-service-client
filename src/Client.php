@@ -187,7 +187,7 @@ class Client
         $response = $this->request($uri, $options, 'post');
         $nodeArray = $this->getResult($response);
 
-        return Node::fromArray($nodeArray['result']);
+        return Node::fromServerArray($nodeArray['result']);
     }
 
 

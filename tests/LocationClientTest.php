@@ -8,6 +8,7 @@ use GuzzleHttp\Psr7\Response;
 use mhndev\locationClient\Client;
 use mhndev\locationClient\exceptions\InvalidNeighbourNodeDataException;
 use mhndev\locationClient\objects\NeighbourNode;
+use mhndev\locationClient\objects\Node;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -66,9 +67,8 @@ class LocationClientTest extends TestCase
 
     public function testNearestNeighboursFail()
     {
-        $bodyString = json_encode(
-            [
-                'result' =>
+        $serverResponseArray = [
+            'result' =>
                 [
                     [
                         // node here should be id
@@ -88,8 +88,9 @@ class LocationClientTest extends TestCase
                         'location' => ['lat' => 36.245244, 'lon' => 51.123331]
                     ]
                 ]
-            ]
-        );
+        ];
+
+        $bodyString = json_encode($serverResponseArray);
 
         $mock = new MockHandler([new Response(200, [], $bodyString)]);
 
@@ -110,57 +111,51 @@ class LocationClientTest extends TestCase
     }
 
 
-    public function testLocationNameSuggestSuccess()
-    {
-        $this->assertTrue(true);
-    }
-
-
-    public function testLocationNameSuggestFail()
-    {
-        $this->assertTrue(true);
-    }
-
-
-
-    public function testGeoCodeSuccess()
-    {
-        $this->assertTrue(true);
-    }
-
-    public function testGeoCodeFail()
-    {
-        $this->assertTrue(true);
-    }
-
-
-    public function testReverseGeocodeSuccess()
-    {
-        $this->assertTrue(true);
-    }
-
-    public function testReverseGeocodeFail()
-    {
-        $this->assertTrue(true);
-    }
-
-
-    public function testEstimateDistanceAndTimeSuccess()
-    {
-        $this->assertTrue(true);
-    }
-
-    public function testEstimateDistanceAndTimeFail()
-    {
-        $this->assertTrue(true);
-    }
-
 
 
 
     public function testSaveLastLocationSuccess()
     {
-        $this->assertTrue(true);
+        $id = 'sampleNodeIdNumberGoesHere';
+        $location =  [
+            'lat' => 35.24534,
+            'lon' => 51.24324
+        ];
+
+        /*
+            // sample consider this is request body json
+            $requestBodyArray = [
+                'id' => $id,
+                'location' => $location
+            ];
+        */
+
+        $serverResponseArray = [
+            'result' => [
+                'id' => $id,
+                'state' => 'ready',
+                'location' => $location
+            ]
+        ];
+
+        $bodyString = json_encode($serverResponseArray);
+        $mock = new MockHandler([new Response(200, [], $bodyString)]);
+        $handler = HandlerStack::create($mock);
+        $httpClient = new HttpClient(['handler' => $handler]);
+        $token = 'sampleTokenString';
+        $locationClient = new Client($httpClient, $token);
+
+        $node = Node::fromArray([
+            'identifier' => 'mhnderf4',
+            'latitude'   => 35.32233,
+            'longitude'  => 51.24234,
+            'state'      => 'ready',
+            'trip_id'    => '34323'
+        ]);
+
+        $node = $locationClient->saveLastLocation($node);
+
+        $this->assertInstanceOf(Node::class, $node);
     }
 
 
@@ -212,6 +207,70 @@ class LocationClientTest extends TestCase
 
     public function testGetNodeTripPointsFail()
     {
+        $this->assertTrue(true);
+    }
+
+
+
+
+
+    public function testLocationNameSuggestSuccess()
+    {
+        // server doesn't yet support this API
+        $this->assertTrue(true);
+    }
+
+
+    public function testLocationNameSuggestFail()
+    {
+        // server doesn't yet support this API
+
+        $this->assertTrue(true);
+    }
+
+
+
+    public function testGeoCodeSuccess()
+    {
+        // server doesn't yet support this API
+
+        $this->assertTrue(true);
+    }
+
+    public function testGeoCodeFail()
+    {
+        // server doesn't yet support this API
+
+        $this->assertTrue(true);
+    }
+
+
+    public function testReverseGeocodeSuccess()
+    {
+        // server doesn't yet support this API
+
+        $this->assertTrue(true);
+    }
+
+    public function testReverseGeocodeFail()
+    {
+        // server doesn't yet support this API
+
+        $this->assertTrue(true);
+    }
+
+
+    public function testEstimateDistanceAndTimeSuccess()
+    {
+        // server doesn't yet support this API
+
+        $this->assertTrue(true);
+    }
+
+    public function testEstimateDistanceAndTimeFail()
+    {
+        // server doesn't yet support this API
+
         $this->assertTrue(true);
     }
 

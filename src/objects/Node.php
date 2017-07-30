@@ -78,6 +78,24 @@ class Node
         $trip_id = $array['trip_id'] ?? '';
 
         return new static(
+            $array['identifier'],
+            $array['latitude'],
+            $array['longitude'],
+            $state,
+            $trip_id
+        );
+    }
+
+    /**
+     * @param array $array
+     * @return static
+     */
+    public static function fromServerArray(array $array)
+    {
+        $state = $array['state'] ?? '';
+        $trip_id = $array['trip_id'] ?? '';
+
+        return new static(
             $array['id'],
             $array['location']['lat'],
             $array['location']['lon'],
