@@ -1,6 +1,8 @@
 <?php
 namespace mhndev\locationClient\objects;
 
+use mhndev\locationClient\exceptions\InvalidNeighbourNodeDataException;
+
 /**
  * Class NeighbourNode
  * @package mhndev\locationClient
@@ -37,6 +39,37 @@ class NeighbourNode
         $this->lastLocation = $lastLocation;
     }
 
+
+    /**
+     * @param array $array
+     * @return static
+     */
+    public static function fromArray(array $array)
+    {
+        if(empty($array['identifier']) || empty($array['distance']) || empty($array['location'])){
+            throw new InvalidNeighbourNodeDataException();
+        }
+
+        return new static(
+            $array['identifier'],
+            $array['distance'],
+            new Point($array['location']['lat'], $array['location']['lon'])
+        );
+    }
+
+
+    public static function fromServerArray(array $array)
+    {
+        if(empty($array['id']) || empty($array['distance']) || empty($array['location'])){
+            throw new InvalidNeighbourNodeDataException();
+        }
+
+        return new static(
+            $array['id'],
+            $array['distance'],
+            new Point($array['location']['lat'], $array['location']['lon'])
+        );
+    }
 
 
     /**

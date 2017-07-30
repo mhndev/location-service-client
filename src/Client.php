@@ -98,12 +98,7 @@ class Client
         }
         else{
             foreach ($nodes as $node){
-
-                $result[] = new NeighbourNode(
-                    $node['id'],
-                    $node['distance'],
-                    new Point($node['location']['lat'], $node['location']['lon'])
-                );
+                $result[] = NeighbourNode::fromServerArray($node);
             }
         }
 
