@@ -153,9 +153,10 @@ class LocationClientTest extends TestCase
             'trip_id'    => '34323'
         ]);
 
-        $node = $locationClient->saveLastLocation($node);
+        $nodeResponse = $locationClient->saveLastLocation($node);
 
-        $this->assertInstanceOf(Node::class, $node);
+        $this->assertInstanceOf(Node::class, $nodeResponse);
+        $this->assertEquals($nodeResponse->getIdentifier(), $id);
     }
 
 
