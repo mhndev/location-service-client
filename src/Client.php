@@ -45,23 +45,17 @@ class Client
 
     /**
      * LocationClient constructor
-     * @param string $host
-     * @param int $port
+     *
      * @param string $token
+     * @param httpClient $client
      */
     public function __construct(
-        string $host,
-        int $port,
+        httpClient $client,
         string $token
     )
     {
-        $this->host = $host;
-        $this->port = $port;
+        $this->httpClient = $client;
         $this->token = $token;
-
-        $this->httpClient = new httpClient([
-            'base_uri' => $host.':'.$port,
-        ]);
     }
 
 
@@ -104,6 +98,7 @@ class Client
         }
         else{
             foreach ($nodes as $node){
+
                 $result[] = new NeighbourNode(
                     $node['id'],
                     $node['distance'],
