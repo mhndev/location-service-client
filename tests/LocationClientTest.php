@@ -6,6 +6,7 @@ use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Psr7\Response;
 use mhndev\locationClient\Client;
+use mhndev\locationClient\exceptions\InvalidNeighbourNodeDataException;
 use mhndev\locationClient\objects\NeighbourNode;
 use PHPUnit\Framework\TestCase;
 
@@ -65,7 +66,47 @@ class LocationClientTest extends TestCase
 
     public function testNearestNeighboursFail()
     {
-        $this->assertTrue(true);
+        $bodyString = json_encode(
+            [
+                'result' =>
+                [
+                    [
+                        // node here should be id
+                        // check if invalid response is handled by client
+                        'node' => 1,
+                        'distance' => '4332.324',
+                        'location' => ['lat' => 35.3432, 'lon' => 51.243]
+                    ],
+                    [
+                        'id' => 2,
+                        'distance' => '500045.324',
+                        'location' => ['lat' => 35.45332, 'lon' => 51.87765]
+                    ],
+                    [
+                        'id' => 3,
+                        'distance' => '650012.324',
+                        'location' => ['lat' => 36.245244, 'lon' => 51.123331]
+                    ]
+                ]
+            ]
+        );
+
+        $mock = new MockHandler([new Response(200, [], $bodyString)]);
+
+        $handler = HandlerStack::create($mock);
+        $httpClient = new HttpClient(['handler' => $handler]);
+
+        $token = 'sampleTokenString';
+
+        $locationClient = new Client($httpClient, $token);
+
+        try{
+            $locationClient->nearestNeighbours(35.32423,51.32432);
+            $this->assertTrue(false);
+
+        }catch (InvalidNeighbourNodeDataException $e){
+            $this->assertTrue(true);
+        }
     }
 
 
