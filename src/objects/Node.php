@@ -74,12 +74,15 @@ class Node
      */
     public static function fromArray(array $array)
     {
+        $state = $array['state'] ?? '';
+        $trip_id = $array['trip_id'] ?? '';
+
         return new static(
-            $array['identifier'],
-            $array['latitude'],
-            $array['longitude'],
-            $array['state'],
-            $array['trip_id']
+            $array['id'],
+            $array['location']['lat'],
+            $array['location']['lon'],
+            $state,
+            $trip_id
         );
     }
 
