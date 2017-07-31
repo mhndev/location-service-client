@@ -1,5 +1,5 @@
 {
-  "name": "mhndev/php-location-sdk",
+  "name": "mhndev/location-service-client",
   "description": "php Location Service Sdk",
   "keywords": ["php", "location", "location-service"],
   "homepage": "https://github.com/mhndev/location-service-client",
