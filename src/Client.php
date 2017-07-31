@@ -45,12 +45,7 @@ class Client implements iClient
 
 
     /**
-     * @param float $latitude
-     * @param float $longitude
-     * @param int $n number of nodes
-     * @param int $r radius around given point
-     * @param bool $throwExceptionOnEmptyResultSet
-     * @return array of mhndev\locationClient\NeighbourNode
+     * @inheritdoc
      */
     public function nearestNeighbours(
         float $latitude,
@@ -92,9 +87,7 @@ class Client implements iClient
 
 
     /**
-     * @param string $query
-     * @param int $page
-     * @param int $perPage
+     * @inheritdoc
      */
     public function locationNameSuggest(
         string $query,
@@ -107,8 +100,7 @@ class Client implements iClient
 
 
     /**
-     * @param string $location_name
-     * @return Location
+     * @inheritdoc
      */
     public function geoCode(string $location_name)
     {
@@ -117,10 +109,7 @@ class Client implements iClient
 
 
     /**
-     * @param float $latitude
-     * @param float $longitude
-     *
-     * @return Location
+     * @inheritdoc
      */
     public function reverseGeocode(float $latitude, float $longitude)
     {
@@ -129,9 +118,7 @@ class Client implements iClient
 
 
     /**
-     * @param Location $A
-     * @param Location $B
-     * @param \DateTime|null $time
+     * @inheritdoc
      */
     public function EstimateDistanceAndTime(
         Location $A,
@@ -148,8 +135,7 @@ class Client implements iClient
 
 
     /**
-     * @param Node $node
-     * @return Node
+     * @inheritdoc
      */
     public function saveLastLocation(Node $node)
     {
@@ -177,8 +163,7 @@ class Client implements iClient
 
 
     /**
-     * @param Node $node
-     * @return Node
+     * @inheritdoc
      */
     public function changeNodeState(Node $node)
     {
@@ -203,10 +188,7 @@ class Client implements iClient
 
 
     /**
-     * @param Node $node
-     * @param string $trip_id
-     *
-     * @return boolean
+     * @inheritdoc
      */
     public function startTrip(Node $node, string $trip_id)
     {
@@ -235,9 +217,7 @@ class Client implements iClient
 
 
     /**
-     * @param Node $node
-     * @param string $trip_id
-     * @return bool
+     * @inheritdoc
      */
     public function endTrip(Node $node, string $trip_id)
     {
@@ -266,10 +246,7 @@ class Client implements iClient
 
 
     /**
-     * @param Node $node
-     * @param $trip_id
-     *
-     * @return array
+     * @inheritdoc
      */
     public function getNodeTripPoints(Node $node, $trip_id)
     {
