@@ -8,30 +8,18 @@ use mhndev\locationClient\exceptions\ConnectException as LocationConnectExceptio
 use mhndev\locationClient\exceptions\EmptyResultSetException;
 use mhndev\locationClient\exceptions\LocationServerErrorException;
 use mhndev\locationClient\exceptions\UnAuthorizedException;
+use mhndev\locationClient\interfaces\iClient;
 use mhndev\locationClient\objects\Location;
 use mhndev\locationClient\objects\NeighbourNode;
 use mhndev\locationClient\objects\Node;
-use mhndev\locationClient\objects\Point;
 use Psr\Http\Message\ResponseInterface;
 
 /**
  * Class LocationClient
  * @package mhndev\digipeyk\services
  */
-class Client
+class Client implements iClient
 {
-
-
-    /**
-     * @var string
-     */
-    protected $host;
-
-    /**
-     * @var integer
-     */
-    protected $port;
-
     /**
      * @var Client
      */
@@ -49,10 +37,7 @@ class Client
      * @param string $token
      * @param httpClient $client
      */
-    public function __construct(
-        httpClient $client,
-        string $token
-    )
+    public function __construct(httpClient $client, string $token)
     {
         $this->httpClient = $client;
         $this->token = $token;
