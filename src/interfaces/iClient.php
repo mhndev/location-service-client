@@ -22,7 +22,7 @@ interface iClient
      * @param float $longitude
      * @param int $n number of nodes
      * @param int $r radius around given point
-     * @param bool $throwExceptionOnEmptyResultSet
+     * @param bool $returnArrayOfObjects
      * @return array of mhndev\locationClient\NeighbourNode
      */
     public function nearestNeighbours(
@@ -30,7 +30,7 @@ interface iClient
         float $longitude,
         int $n = 10,
         int $r = 1000,
-        bool $throwExceptionOnEmptyResultSet = false
+        $returnArrayOfObjects = false
     );
 
 

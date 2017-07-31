@@ -56,8 +56,8 @@ class Node
         string $identifier,
         float $latitude,
         float $longitude,
-        string $state = '',
-        string $trip_id = ''
+        string $state = null,
+        string $trip_id = null
     )
     {
         $this->identifier = $identifier;

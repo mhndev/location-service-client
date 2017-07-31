@@ -52,7 +52,7 @@ class Client implements iClient
         float $longitude,
         int $n = 10,
         int $r = 1000,
-        bool $throwExceptionOnEmptyResultSet = false
+        $returnArrayOfObjects = false
     )
     {
         $uri = $this->getAddresses(__FUNCTION__);
@@ -69,14 +69,11 @@ class Client implements iClient
 
         $response = $this->request($uri, $options);
         $nodes = $this->getResult($response)['result'];
-        $result = [];
 
-        if(empty($nodes)){
-            if($throwExceptionOnEmptyResultSet){
-                throw new EmptyResultSetException();
-            }
-        }
-        else{
+        $result = $nodes;
+
+        if($returnArrayOfObjects){
+
             foreach ($nodes as $node){
                 $result[] = NeighbourNode::fromServerArray($node);
             }
