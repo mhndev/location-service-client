@@ -37,7 +37,7 @@ class Client implements iClient
      * @param string $token
      * @param httpClient $client
      */
-    public function __construct(httpClient $client, string $token)
+    public function __construct(httpClient $client, string $token = null)
     {
         $this->httpClient = $client;
         $this->token = $token;
@@ -336,6 +336,44 @@ class Client implements iClient
         }
 
         return $response;
+    }
+
+    /**
+     * @return Client
+     */
+    public function getHttpClient(): Client
+    {
+        return $this->httpClient;
+    }
+
+    /**
+     * @param Client $httpClient
+     * @return $this
+     */
+    public function setHttpClient(Client $httpClient)
+    {
+        $this->httpClient = $httpClient;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getToken(): string
+    {
+        return $this->token;
+    }
+
+    /**
+     * @param string $token
+     * @return $this
+     */
+    public function setToken(string $token)
+    {
+        $this->token = $token;
+
+        return $this;
     }
 
 }
