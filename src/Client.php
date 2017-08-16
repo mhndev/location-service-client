@@ -5,7 +5,6 @@ use GuzzleHttp\Client as httpClient;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\ConnectException;
 use mhndev\locationClient\exceptions\ConnectException as LocationConnectException;
-use mhndev\locationClient\exceptions\EmptyResultSetException;
 use mhndev\locationClient\exceptions\LocationServerErrorException;
 use mhndev\locationClient\exceptions\UnAuthorizedException;
 use mhndev\locationClient\interfaces\iClient;
