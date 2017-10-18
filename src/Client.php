@@ -63,6 +63,7 @@ class Client implements iClient
     )
     {
         $uri = $this->getAddresses(__FUNCTION__);
+        
         $options = [
             'headers' => ['Authorization' => 'Bearer ' . $this->token],
             'query' => [
