@@ -1,4 +1,5 @@
 <?php
+
 namespace mhndev\locationClient;
 
 use GuzzleHttp\Client as httpClient;
@@ -29,16 +30,23 @@ class Client implements iClient
      */
     protected $token;
 
+    /**
+     * @var string
+     */
+    protected $url;
+
 
     /**
      * LocationClient constructor
      *
-     * @param string $token
      * @param httpClient $client
+     * @param string $url
+     * @param string $token
      */
-    public function __construct(httpClient $client, string $token = null)
+    public function __construct(httpClient $client, string $url ,string $token = null)
     {
         $this->httpClient = $client;
+        $this->url = $url;
         $this->token = $token;
     }
 
@@ -55,9 +63,8 @@ class Client implements iClient
     )
     {
         $uri = $this->getAddresses(__FUNCTION__);
-
         $options = [
-            'headers' => [ 'Authorization' => 'Bearer '.$this->token ],
+            'headers' => ['Authorization' => 'Bearer ' . $this->token],
             'query' => [
                 'lat' => $latitude,
                 'lon' => $longitude,
@@ -69,13 +76,14 @@ class Client implements iClient
         $response = $this->request($uri, $options);
         $nodes = $this->getResult($response)['result'];
 
-        $result = $nodes;
+        if (!$returnArrayOfObjects) {
+            return $nodes;
+        }
 
-        if($returnArrayOfObjects){
+        $result = [];
 
-            foreach ($nodes as $node){
-                $result[] = NeighbourNode::fromServerArray($node);
-            }
+        foreach ($nodes as $node) {
+            $result[] = NeighbourNode::fromServerArray($node);
         }
 
         return $result;
@@ -122,7 +130,7 @@ class Client implements iClient
         \DateTime $time = null
     )
     {
-        if(empty($time)){
+        if (empty($time)) {
             $time = new \DateTime();
         }
 
@@ -139,8 +147,8 @@ class Client implements iClient
 
         $options = [
             'headers' => [
-                'Authorization' => 'Bearer '.$this->token,
-                'Content-Type'  => 'application/json'
+                'Authorization' => 'Bearer ' . $this->token,
+                'Content-Type' => 'application/json'
             ],
             'json' => [
                 'id' => $node->getIdentifier(),
@@ -167,8 +175,8 @@ class Client implements iClient
 
         $options = [
             'headers' => [
-                'Authorization' => 'Bearer '.$this->token,
-                'Content-Type'  => 'application/json'
+                'Authorization' => 'Bearer ' . $this->token,
+                'Content-Type' => 'application/json'
             ],
             'json' => [
                 'id' => $node->getIdentifier(),
@@ -192,8 +200,8 @@ class Client implements iClient
 
         $options = [
             'headers' => [
-                'Authorization' => 'Bearer '.$this->token,
-                'Content-Type'  => 'application/json'
+                'Authorization' => 'Bearer ' . $this->token,
+                'Content-Type' => 'application/json'
             ],
             'json' => [
                 'node_id' => $node->getIdentifier(),
@@ -203,10 +211,9 @@ class Client implements iClient
 
         $response = $this->request($uri, $options, 'post');
 
-        if($this->getResult($response)['result'] == true){
+        if ($this->getResult($response)['result'] == true) {
             return true;
-        }
-        else{
+        } else {
             return false;
         }
     }
@@ -221,8 +228,8 @@ class Client implements iClient
 
         $options = [
             'headers' => [
-                'Authorization' => 'Bearer '.$this->token,
-                'Content-Type'  => 'application/json'
+                'Authorization' => 'Bearer ' . $this->token,
+                'Content-Type' => 'application/json'
             ],
             'json' => [
                 'node_id' => $node->getIdentifier(),
@@ -232,10 +239,9 @@ class Client implements iClient
 
         $response = $this->request($uri, $options, 'post');
 
-        if($this->getResult($response)['result'] == true){
+        if ($this->getResult($response)['result'] == true) {
             return true;
-        }
-        else{
+        } else {
             return false;
         }
     }
@@ -250,8 +256,8 @@ class Client implements iClient
 
         $options = [
             'headers' => [
-                'Authorization' => 'Bearer '.$this->token,
-                'Content-Type'  => 'application/json'
+                'Authorization' => 'Bearer ' . $this->token,
+                'Content-Type' => 'application/json'
             ],
             'query' => [
                 'node_id' => $node->getIdentifier(),
@@ -269,22 +275,22 @@ class Client implements iClient
      * @param string $action
      * @return string
      */
-    private function getAddresses(string $action) :string
+    private function getAddresses(string $action): string
     {
         $addresses = [
-            'getNodeTripPoints'       => '/trip',
-            'startTrip'               => '/trip',
-            'endTrip'                 => '/trip/end',
-            'changeNodeState'         => '/location/state',
-            'saveLastLocation'        => '/location',
-            'nearestNeighbours'       => '/location/knn',
+            'getNodeTripPoints' => '/trip',
+            'startTrip' => '/trip',
+            'endTrip' => '/trip/end',
+            'changeNodeState' => '/location/state',
+            'saveLastLocation' => '/location',
+            'nearestNeighbours' => '/location/knn',
             'EstimateDistanceAndTime' => '',
-            'reverseGeocode'          => '',
-            'geoCode'                 => '',
-            'locationNameSuggest'     => ''
+            'reverseGeocode' => '',
+            'geoCode' => '',
+            'locationNameSuggest' => ''
         ];
 
-        return $addresses[$action];
+        return $this->getUrl(). $addresses[$action];
     }
 
 
@@ -309,25 +315,22 @@ class Client implements iClient
      */
     private function request(string $uri, array $options = [], $method = 'get')
     {
-        try{
+        try {
             $response = $this->httpClient->$method($uri, $options);
-        }catch (ConnectException $e){
+        } catch (ConnectException $e) {
             throw new LocationConnectException(
-                'Cannot Establish connection to Location Service'.$e->getMessage()
+                'Cannot Establish connection to Location Service' . $e->getMessage()
             );
-        }
-        catch (ClientException $e){
-            if($e->getResponse()->getStatusCode() == 401){
+        } catch (ClientException $e) {
+            if ($e->getResponse()->getStatusCode() == 401) {
                 throw new UnAuthorizedException();
-            }elseif ($e->getResponse()->getStatusCode() >= 500){
+            } elseif ($e->getResponse()->getStatusCode() >= 500) {
                 throw new LocationServerErrorException($e->getResponse()->getBody()->getContents());
-            }
-
-            else{
+            } else {
                 throw new \Exception('Unhandled Exception');
             }
 
-        }catch (\Exception $e){
+        } catch (\Exception $e) {
             throw new \Exception('Unhandled Exception');
         }
 
@@ -370,6 +373,22 @@ class Client implements iClient
         $this->token = $token;
 
         return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getUrl(): string
+    {
+        return $this->url;
+    }
+
+    /**
+     * @param string $url
+     */
+    public function setUrl(string $url)
+    {
+        $this->url = $url;
     }
 
 }

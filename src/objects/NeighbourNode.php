@@ -60,22 +60,22 @@ class NeighbourNode
 
     public static function fromServerArray(array $array)
     {
-        if(empty($array['id']) || empty($array['distance']) || empty($array['location'])){
+        if(empty($array['node']['id']) || empty($array['distance']) || empty($array['node']['location'])){
             throw new InvalidNeighbourNodeDataException();
         }
 
         return new static(
-            $array['id'],
+            $array['node']['id'],
             $array['distance'],
-            new Point($array['location']['lat'], $array['location']['lon'])
+            new Point($array['node']['location']['lat'], $array['node']['location']['lon'])
         );
     }
 
 
     /**
-     * @return int
+     * @return int | string
      */
-    public function getIdentifier(): int
+    public function getIdentifier()
     {
         return $this->identifier;
     }
@@ -84,7 +84,7 @@ class NeighbourNode
      * @param int $identifier
      * @return $this
      */
-    public function setIdentifier(int $identifier)
+    public function setIdentifier($identifier)
     {
         $this->identifier = $identifier;
 
